@@ -1,5 +1,6 @@
-# salah-notifs
-A python CLI service for Linux which does only one thing; sends a notification at the adhān and iqāma of each prayer.
+# notify-salawāt
+Bismillah.
+Notify-salawāt is a Python CLI program for Linux which does only one thing; sends a notification at the adhān and iqāma of each prayer. This project utilizes the [aladhan](https://aladhan.com/prayer-times-api) API.
 
 ## Dependancies
 - python
@@ -8,12 +9,16 @@ A python CLI service for Linux which does only one thing; sends a notification a
 That's it. I tried to ensure it had as little dependencies as possible.
 
 ## Installation
-Clone this repository. Assuming you placed the repository in `~/code` (place it anywhere you want, this is just an example), set this command to auto-start when you launch your computer: `python3 ~/code/notify-salawat/main.py`.
+Clone this repository. Assuming you placed the repository in `~/code` (place it anywhere you want, this is just an example), set this command to auto-start when you launch your computer: `python3 ~/code/notify-salawat/main.py --city "your city" --country "your country"`.
 
 A Nix flake for NixOS and home-manager is coming soon.
 
 ## Configuration
-Customization options are coming soon.
+- `-h`, `--help`: Display all options.
+- `--country "your country"`: Required so that the prayer times can be fetched.
+- `--city "your city"`: Required so that the prayer times can be fetched.
+- `-i`, `--iqama`: Enable iqāma notifications.
+- `-g`, `--gap`: Gap in minutes between the adhān and iqāma notifications.
 
 ## License
 [GNU GPL v3](./LICENSE).
