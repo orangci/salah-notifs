@@ -1,6 +1,6 @@
-# notify-salawāt
+# pyminaret
 Bismillah.
-Notify-salawāt is an 80 line Python CLI program for Linux which does only one thing; sends a notification at the adhān and iqāma of each prayer. This project utilizes the [aladhan](https://aladhan.com/prayer-times-api) API. It uses ~25MiB of memory.
+pyminaret is an 80 line Python CLI program for Linux which does only one thing; sends a notification at the adhān and iqāma of each prayer. This project utilizes the [aladhan](https://aladhan.com/prayer-times-api) API. It uses ~25MiB of memory.
 
 ## Dependancies
 - python

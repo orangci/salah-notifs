@@ -19,7 +19,7 @@ def get_prayer_times(city, country):
                 return timings
     except Exception as e:
         # fmt: off
-        subprocess.run(["notify-send", "notify-salawāt", "API Error; maybe you don't have internet access? Quitting notify-salawāt.", "-i", icon_path, "-a", "notify-salawat"])
+        subprocess.run(["notify-send", "pyminaret", "API Error; maybe you don't have internet access? Quitting pyminaret.", "-i", icon_path, "-a", "pyminaret"])
         # fmt: on
         raise SystemExit
     return {}
@@ -28,10 +28,10 @@ def get_prayer_times(city, country):
 def send_notification(prayer_name, prayer_time, calltype, iqama):
     # fmt: off
     if iqama is True:
-        subprocess.run(["notify-send", f"{prayer_name.capitalize()} Time", f" It is time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "notify-salawat"])
+        subprocess.run(["notify-send", f"{prayer_name.capitalize()} Time", f" It is time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "pyminaret"])
         return
     subprocess.run(
-        [ "notify-send", f"{prayer_name.capitalize()} Time", f" It is {prayer_time}, the time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "notify-salawat"])
+        [ "notify-send", f"{prayer_name.capitalize()} Time", f" It is {prayer_time}, the time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "pyminaret"])
     # fmt: on
 
 
@@ -60,9 +60,9 @@ def main(city, country, iqama_enabled, gap_minutes):
 
 
 parser = argparse.ArgumentParser(
-    prog="notify-salawāt",
+    prog="pyminaret",
     description="A Python CLI program for Linux for sending notifications at the adhān and iqāma times of each Islāmic prayer.",
-    epilog="This program is open source! https://github.com/orangci/notify-salawat",
+    epilog="This program is open source! https://github.com/orangci/pyminaret",
 )
 
 # fmt: off
