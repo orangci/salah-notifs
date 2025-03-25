@@ -70,4 +70,5 @@ parser.add_argument("-g", "--gap", type=int, default=15, help="Gap in minutes be
 args = parser.parse_args()
 icon_path = f"{subprocess.check_output(['pwd']).decode('utf-8').strip()}/icon.png"
 
+print("\033[1mSuccess! If all goes well, you'll be notified at the adhān and iqāma of each salah, insha'allah. <3\033[0m\n")
 main(args.city, args.country.replace(" ", "+"), args.iqama, args.gap - 1)
