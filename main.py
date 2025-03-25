@@ -1,10 +1,5 @@
-import time
-import json
-from urllib.request import urlopen
 from datetime import datetime, timedelta
-import subprocess
-import os
-import argparse
+import subprocess, os, argparse, time, json, urllib.request
 
 
 def get_prayer_times(city, country):
@@ -13,7 +8,7 @@ def get_prayer_times(city, country):
     print(f"Using API URL: {api_url}")
 
     try:
-        with urlopen(api_url) as response:
+        with urllib.request.urlopen(api_url) as response:
             data = json.loads(response.read())
             if data and data.get("data"):
                 timings = data["data"]["timings"]
@@ -30,8 +25,7 @@ def get_prayer_times(city, country):
     return {}
 
 
-def send_notification(prayer_name, prayer_time, calltype):
-    # fmt: off
+def send_notification(prayer_name, prayer_time, calltype): # fmt: off
     subprocess.run(["notify-send", f"{prayer_name.capitalize()} Time", f" It is {prayer_time}, the time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "notify-salawat"])
     # fmt: on
 
@@ -51,9 +45,11 @@ def main(city, country, iqama_enabled, gap_minutes):
                     time.sleep(60)
 
                     if iqama_enabled:
+                        # fmt: off
                         reminder_time_obj = (datetime.combine(datetime.today(), prayer_time_obj) + timedelta(minutes=gap_minutes)).time()
+                        # fmt: on
                         while datetime.now().time() < reminder_time_obj:
-                            time.sleep(30)
+                            time.sleep(15)
                         send_notification(prayer_name, prayer_time, "iqāma")
         time.sleep(30)
 
