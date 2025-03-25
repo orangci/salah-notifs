@@ -62,7 +62,7 @@ def main(city, country, iqama_enabled, gap_minutes):
 parser = argparse.ArgumentParser(
     prog="pyminaret",
     description="A Python CLI program for Linux for sending notifications at the adhān and iqāma times of each Islāmic prayer.",
-    epilog="This program is open source! https://github.com/orangci/pyminaret",
+    epilog="This program is licensed under GNU GPLv3 and is open source! https://github.com/orangci/pyminaret",
 )
 
 # fmt: off
