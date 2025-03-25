@@ -25,8 +25,13 @@ def get_prayer_times(city, country):
     return {}
 
 
-def send_notification(prayer_name, prayer_time, calltype): # fmt: off
-    subprocess.run(["notify-send", f"{prayer_name.capitalize()} Time", f" It is {prayer_time}, the time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "notify-salawat"])
+def send_notification(prayer_name, prayer_time, calltype, iqama):
+    # fmt: off
+    if iqama is True:
+        subprocess.run(["notify-send", f"{prayer_name.capitalize()} Time", f" It is time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "notify-salawat"])
+        return
+    subprocess.run(
+        [ "notify-send", f"{prayer_name.capitalize()} Time", f" It is {prayer_time}, the time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "notify-salawat"])
     # fmt: on
 
 
@@ -50,7 +55,7 @@ def main(city, country, iqama_enabled, gap_minutes):
                         # fmt: on
                         while datetime.now().time() < reminder_time_obj:
                             time.sleep(15)
-                        send_notification(prayer_name, prayer_time, "iqāma")
+                        send_notification(prayer_name, prayer_time, "iqāma", True)
         time.sleep(30)
 
 
@@ -65,10 +70,8 @@ parser.add_argument("--city", required=True, help="Your city.")
 parser.add_argument("--country", required=True, help="Your country.")
 parser.add_argument("-i", "--iqama", action="store_true", default=True, help="Enable iqāma notifications.")
 parser.add_argument("-g", "--gap", type=int, default=15, help="Gap in minutes between the adhān and iqāma notifications.")
-# fmt: on
-
 args = parser.parse_args()
 icon_path = f"{subprocess.check_output(['pwd']).decode('utf-8').strip()}/icon.png"
 
-print("\033[1mSuccess! If all goes well, you'll be notified at the adhān and iqāma of each salah, insha'allah. <3\033[0m\n")
+print("\033[1mSuccess! If all goes well, you'll be notified at the adhān and iqāma of each salah, insha'allah. \033[0m\n")
 main(args.city, args.country.replace(" ", "+"), args.iqama, args.gap - 1)
