@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import subprocess, os, argparse, time, json, urllib.request
-
+icon_path = f"{subprocess.check_output(['pwd']).decode('utf-8').strip()}/icon.png"
 
 def get_prayer_times(city, country):
     current_date = datetime.now().strftime("%d-%m-%Y")
@@ -25,7 +25,7 @@ def get_prayer_times(city, country):
     return {}
 
 
-def send_notification(prayer_name, prayer_time, calltype, iqama):
+def send_notification(prayer_name, prayer_time, calltype, iqama = False):
     # fmt: off
     if iqama is True:
         subprocess.run(["notify-send", f"{prayer_name.capitalize()} Time", f" It is time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "pyminaret"])
@@ -71,7 +71,6 @@ parser.add_argument("--country", required=True, help="Your country.")
 parser.add_argument("-i", "--iqama", action="store_true", default=True, help="Enable iqāma notifications.")
 parser.add_argument("-g", "--gap", type=int, default=15, help="Gap in minutes between the adhān and iqāma notifications.")
 args = parser.parse_args()
-icon_path = f"{subprocess.check_output(['pwd']).decode('utf-8').strip()}/icon.png"
 
 print("\033[1mSuccess! If all goes well, you'll be notified at the adhān and iqāma of each salah, insha'allah. \033[0m\n")
 main(args.city, args.country.replace(" ", "+"), args.iqama, args.gap - 1)
