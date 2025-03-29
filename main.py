@@ -1,37 +1,43 @@
 from datetime import datetime, timedelta
 import subprocess, os, argparse, time, json, urllib.request
+
 icon_path = f"{subprocess.check_output(['pwd']).decode('utf-8').strip()}/icon.png"
 
-def get_prayer_times(city, country):
+
+def get_prayer_times(city, country, max_retries=5, wait_time=5):
     current_date = datetime.now().strftime("%d-%m-%Y")
     api_url = f"https://api.aladhan.com/v1/timingsByCity/{current_date}?city={city}&country={country}"
     print(f"Using API URL: {api_url}")
 
-    try:
-        with urllib.request.urlopen(api_url) as response:
-            data = json.loads(response.read())
-            if data and data.get("data"):
-                timings = data["data"]["timings"]
+    for attempt in range(max_retries):
+        try:
+            with urllib.request.urlopen(api_url) as response:
+                data = json.loads(response.read())
+                if data and data.get("data"):
+                    timings = data["data"]["timings"]
+                    # fmt: off
+                    for key in ["Sunrise", "Sunset", "Imsak", "Midnight", "Firstthird", "Lastthird"]:
+                        # fmt: on
+                        timings.pop(key, None)
+                    return timings
+        except Exception as e:
+            print(f"Attempt {attempt + 1} failed: {e}")
+            if attempt < max_retries - 1:
+                print(f"Retrying in {wait_time} seconds...")
+                time.sleep(wait_time)
+            else:
                 # fmt: off
-                for key in ["Sunrise", "Sunset", "Imsak", "Midnight", "Firstthird", "Lastthird"]:
-                    # fmt: on
-                    timings.pop(key, None)
-                return timings
-    except Exception as e:
-        # fmt: off
-        subprocess.run(["notify-send", "pyminaret", "API Error; maybe you don't have internet access? Quitting pyminaret.", "-i", icon_path, "-a", "pyminaret"])
-        # fmt: on
-        raise SystemExit
-    return {}
+                subprocess.run(["notify-send", "pyminaret", "API Error; maybe you don't have internet access? Quitting pyminaret.", "-i", icon_path, "-a", "pyminaret"])
+                # fmt: on
+                raise SystemExit
 
 
-def send_notification(prayer_name, prayer_time, calltype, iqama = False):
+def send_notification(prayer_name, prayer_time, calltype, iqama=False):
     # fmt: off
     if iqama is True:
         subprocess.run(["notify-send", f"{prayer_name.capitalize()} Time", f" It is time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "pyminaret"])
         return
-    subprocess.run(
-        [ "notify-send", f"{prayer_name.capitalize()} Time", f" It is {prayer_time}, the time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "pyminaret"])
+    subprocess.run([ "notify-send", f"{prayer_name.capitalize()} Time", f" It is {prayer_time}, the time for the {prayer_name.capitalize()} {calltype}.", "-i", icon_path, "-a", "pyminaret"])
     # fmt: on
 
 
@@ -68,9 +74,12 @@ parser = argparse.ArgumentParser(
 # fmt: off
 parser.add_argument("--city", required=True, help="Your city.")
 parser.add_argument("--country", required=True, help="Your country.")
+parser.add_argument("-n", "--init-notif-disable", help="Send the startup notification.", action='store_const', const="off")
 parser.add_argument("-i", "--iqama", action="store_true", default=True, help="Enable iqāma notifications.")
 parser.add_argument("-g", "--gap", type=int, default=15, help="Gap in minutes between the adhān and iqāma notifications.")
 args = parser.parse_args()
 
 print("\033[1mSuccess! If all goes well, you'll be notified at the adhān and iqāma of each salah, insha'allah. \033[0m\n")
+if not args.init_notif_disable:
+    subprocess.run(["notify-send", f"pyminaret", "Initialized pyminaret. Disable this notification with -n.", "-i", icon_path, "-a", "pyminaret"])
 main(args.city, args.country.replace(" ", "+"), args.iqama, args.gap - 1)
